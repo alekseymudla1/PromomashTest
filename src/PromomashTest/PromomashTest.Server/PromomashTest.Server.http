@@ -1,0 +1,6 @@
+@PromomashTest.Server_HostAddress = http://localhost:5166
+
+GET {{PromomashTest.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

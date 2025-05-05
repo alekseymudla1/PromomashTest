@@ -1,0 +1,43 @@
+<form *ngIf="step === 1" [formGroup]="registerFormStep1">
+  <label>Email:</label>
+  <textarea formControlName="email"></textarea>
+  <div *ngIf="registerFormStep1.get('email')?.invalid && registerFormStep1.get('email')?.touched">
+    Invalid email.
+  </div>
+
+  <label>Password:</label>
+  <textarea formControlName="password"></textarea>
+  <div *ngIf="registerFormStep1.get('password')?.invalid && registerFormStep1.get('password')?.touched">
+    Password must contain at least one uppercase letter and one number.
+  </div>
+
+  <label>Confirm Password:</label>
+  <textarea formControlName="confirmPassword"></textarea>
+  <div *ngIf="registerFormStep1.errors?.['mismatch'] && registerFormStep1.get('confirmPassword')?.touched">
+    Passwords do not match.
+  </div>
+
+  <label>
+    <input type="checkbox" formControlName="agree" />
+    I agree
+  </label>
+  <div *ngIf="registerFormStep1.get('agree')?.invalid && registerFormStep1.get('agree')?.touched">
+    You must agree before continuing.
+  </div>
+
+  <button type="button" (click)="nextStep()">Next</button>
+</form>
+
+<form *ngIf="step === 2" [formGroup]="registerFormStep2">
+  <label>Country:</label>
+  <select formControlName="countryId">
+    <option *ngFor="let c of countries$ | async" [value]="c.id">{{ c.name }}</option>
+  </select>
+
+  <label>Province:</label>
+  <select formControlName="provinceId">
+    <option *ngFor="let p of provinces$ | async" [value]="p.id">{{ p.name }}</option>
+  </select>
+
+  <button type="button" (click)="save()">Save</button>
+</form>
