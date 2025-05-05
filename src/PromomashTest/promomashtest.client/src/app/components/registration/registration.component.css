@@ -64,3 +64,9 @@ div.ng-invalid.ng-touched select {
   font-size: 0.9rem;
   margin-top: -0.5rem;
 }
+
+.success-message {
+  color: #2ecc71;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+}

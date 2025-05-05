@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { RegistrationApiService } from '../../services/registration-api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -14,8 +15,11 @@ export class RegistrationComponent implements OnInit {
   registerFormStep1!: FormGroup;
   registerFormStep2!: FormGroup;
 
-  countries$!: Observable<any[]>; 
-  provinces$!: Observable<any[]>; 
+  countries$!: Observable<any[]>;
+  provinces$!: Observable<any[]>;
+
+  error: string | null = null;
+  success: string | null = null;
 
   constructor(private fb: FormBuilder, private api: RegistrationApiService) { }
 
@@ -27,7 +31,7 @@ export class RegistrationComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required,
-        Validators.pattern('^(?=.*[A-Z])(?=.*\\d).+$') // заглавная и цифра
+        Validators.pattern('^(?=.*[A-Z])(?=.*\\d).+$')
       ]],
       confirmPassword: ['', Validators.required],
       agree: [false, Validators.requiredTrue]
@@ -70,8 +74,25 @@ export class RegistrationComponent implements OnInit {
         provinceId: this.registerFormStep2.value.provinceId
       };
 
-      this.api.registerUser(user).subscribe(() => {
-        alert('User registered successfully!');
+      this.api.registerUser(user).subscribe({
+        next: () => {
+          this.success = 'User registered successfully!';
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 400) {
+            if (typeof error.error === 'string') {
+              this.error = error.error ;
+            } else if (Array.isArray(error.error)) {
+              const messages = error.error.map((e: any) => e.errorMessage || e.ErrorMessage).join('\n');
+              this.error = messages;
+            } else {
+              this.error = 'Undefined error';
+              console.error(error.error);
+            }
+          } else {
+            this.error = 'Server error: ' + error.message;
+          }
+        }
       });
     } else {
       this.registerFormStep2.markAllAsTouched();

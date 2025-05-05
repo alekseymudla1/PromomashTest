@@ -33,11 +33,25 @@
   <select formControlName="countryId">
     <option *ngFor="let c of countries$ | async" [value]="c.id">{{ c.name }}</option>
   </select>
+  <div *ngIf="registerFormStep2.get('countryId')?.invalid && registerFormStep2.get('countryId')?.touched">
+    Country is required.
+  </div>
 
   <label>Province:</label>
   <select formControlName="provinceId">
     <option *ngFor="let p of provinces$ | async" [value]="p.id">{{ p.name }}</option>
   </select>
+  <div *ngIf="registerFormStep2.get('provinceId')?.invalid && registerFormStep2.get('provinceId')?.touched">
+    Province is required.
+  </div>
+
+  <div *ngIf="!!success && success.length > 0" class="success-message">
+    {{ success }}
+  </div>
+
+  <div *ngIf="!!error && error.length > 0" class="error-message">
+    {{ error }}
+  </div>
 
   <button type="button" (click)="save()">Save</button>
 </form>
